@@ -2,7 +2,10 @@ import * as React from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { Helmet } from "react-helmet";
 
-import { initialize, draw } from "../lib/canvas";
+import {
+  initialize as initializeCanvas,
+  draw as drawCanvas,
+} from "../lib/canvas";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -54,10 +57,26 @@ const Canvas = styled.canvas`
 `;
 
 const IndexPage = () => {
+  const [invert, setInvert] = React.useState(false);
+
   React.useEffect(() => {
-    const ctx = initialize();
-    draw(ctx, true);
+    const ctx = initializeCanvas();
+    drawCanvas(ctx, true);
   }, []);
+
+  React.useEffect(() => {
+    const invertOnMouseMove = (e: MouseEvent) => {
+      const mouseX = e.clientX;
+      const winWidth = window.innerWidth;
+
+      const nextInvert = mouseX > winWidth * 0.5;
+
+      if (nextInvert !== invert) setInvert(nextInvert);
+    };
+    window.addEventListener("mousemove", invertOnMouseMove);
+
+    return () => window.removeEventListener("mousemove", invertOnMouseMove);
+  }, [invert]);
 
   return (
     <main>
@@ -75,9 +94,12 @@ const IndexPage = () => {
         <title>itscursedphil</title>
       </Helmet>
       <GlobalStyle />
+      <Container style={{ backgroundColor: invert ? "white" : "black" }} />
       <Canvas id="background" />
       <Container>
-        <Title>itscursedphil</Title>
+        <Title style={{ color: invert ? "black" : "white" }}>
+          itscursedphil
+        </Title>
       </Container>
     </main>
   );
