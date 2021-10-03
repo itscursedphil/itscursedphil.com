@@ -1,32 +1,21 @@
-export const initialize = (): CanvasRenderingContext2D => {
-  const canvas = document.getElementById("background") as HTMLCanvasElement;
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+import drawWeaver from './generators/weaver';
 
-  const ctx = canvas.getContext("2d");
+export const initialize = (): CanvasRenderingContext2D => {
+  const canvas = document.getElementById('background') as HTMLCanvasElement;
+  canvas.width = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
+
+  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
   return ctx;
 };
 
-const drawRandomPixel = (ctx: CanvasRenderingContext2D) => {
-  const winWidth = window.innerWidth;
-  const winHeight = window.innerHeight;
+export const draw = (
+  ctx: CanvasRenderingContext2D,
+  prevImage?: ImageData
+): void => {
+  drawWeaver(ctx, prevImage);
+  const img = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-  const posX = Math.floor(Math.random() * (winWidth / 6)) * 6;
-  const posY = Math.floor(Math.random() * (winHeight / 6)) * 6;
-
-  const shade = Math.random() > 0.5 ? 255 : 0;
-
-  ctx.fillStyle = `rgb(${shade}, ${shade}, ${shade})`;
-  ctx.fillRect(posX, posY, 6, 6);
-};
-
-export const draw = (ctx: CanvasRenderingContext2D, init = false) => {
-  const amount = Math.floor(Math.random() * 8) - 2;
-
-  for (var i = 0; i < amount; i++) {
-    drawRandomPixel(ctx);
-  }
-
-  requestAnimationFrame(() => draw(ctx));
+  requestAnimationFrame(() => draw(ctx, img));
 };

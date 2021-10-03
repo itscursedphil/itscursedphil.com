@@ -1,11 +1,13 @@
-import * as React from "react";
-import styled, { createGlobalStyle } from "styled-components";
-import { Helmet } from "react-helmet";
+import * as React from 'react';
+import { Helmet } from 'react-helmet';
+import styled, { createGlobalStyle, ThemeProvider } from 'styled-components';
+import { layout } from 'styled-system';
 
+import Box from '../components/Box';
 import {
-  initialize as initializeCanvas,
   draw as drawCanvas,
-} from "../lib/canvas";
+  initialize as initializeCanvas,
+} from '../lib/canvas';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -13,95 +15,66 @@ const GlobalStyle = createGlobalStyle`
   }
 
   html, body {
-    background-color: black;
-    /* color: rgba(255, 255, 255, .05); */
-    color: white;
+    background-color: white;
+    color: black;
     font-family: 'Eczar', serif;
     font-size: 16px;
-    height: 100%;
+    width: 100%;
+    ${() => layout({ height: ['auto', '100%'] })}
     margin: 0;
     padding: 0;
+    display: flex;
   }
-`;
 
-const Container = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Title = styled.h1`
-  text-align: center;
-  letter-spacing: 0.8em;
-  margin: 0;
-  padding: 0;
-  font-size: 1rem;
-  font-weight: 700;
-
-  @media only screen and (min-width: 600px) {
-    font-size: 1.5rem;
+  #___gatsby, #gatsby-focus-wrapper {
+    display: flex;
+    width: 100%;
   }
 `;
 
 const Canvas = styled.canvas`
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
 `;
 
 const IndexPage = () => {
-  const [invert, setInvert] = React.useState(false);
-
   React.useEffect(() => {
     const ctx = initializeCanvas();
-    drawCanvas(ctx, true);
+    drawCanvas(ctx);
   }, []);
 
-  React.useEffect(() => {
-    const invertOnMouseMove = (e: MouseEvent) => {
-      const mouseX = e.clientX;
-      const winWidth = window.innerWidth;
-
-      const nextInvert = mouseX > winWidth * 0.5;
-
-      if (nextInvert !== invert) setInvert(nextInvert);
-    };
-    window.addEventListener("mousemove", invertOnMouseMove);
-
-    return () => window.removeEventListener("mousemove", invertOnMouseMove);
-  }, [invert]);
-
   return (
-    <main>
-      <Helmet>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="true"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;700&display=swap"
-          rel="stylesheet"
-        />
-        <title>itscursedphil</title>
-      </Helmet>
-      <GlobalStyle />
-      <Container style={{ backgroundColor: invert ? "white" : "black" }} />
-      <Canvas id="background" />
-      <Container>
-        <Title style={{ color: invert ? "black" : "white" }}>
-          itscursedphil
-        </Title>
-      </Container>
-    </main>
+    <ThemeProvider theme={{}}>
+      <>
+        <Helmet>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossOrigin="true"
+          />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;700&display=swap"
+            rel="stylesheet"
+          />
+          <title>itscursedphil</title>
+        </Helmet>
+        <GlobalStyle />
+        <Box display={['block', 'flex']} width={1}>
+          <Box
+            display="flex"
+            width={[1, 1 / 2]}
+            bg="black"
+            height={['180px', 'auto']}
+            flexShrink={0}
+          >
+            <Canvas id="background" />
+          </Box>
+          <Box width={[1, 1 / 2]} px={[4]} py={[4]} flexShrink={0}>
+            <p style={{ margin: 0 }}>itscursedphil.com</p>
+          </Box>
+        </Box>
+      </>
+    </ThemeProvider>
   );
 };
 
