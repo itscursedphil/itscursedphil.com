@@ -7,6 +7,7 @@ import Box from '../components/Box';
 import {
   draw as drawCanvas,
   initialize as initializeCanvas,
+  resizeCanvas,
 } from '../lib/canvas';
 
 const GlobalStyle = createGlobalStyle`
@@ -36,10 +37,17 @@ const Canvas = styled.canvas`
   width: 100%;
 `;
 
-const IndexPage = () => {
+const IndexPage: React.FC = () => {
   React.useEffect(() => {
     const ctx = initializeCanvas();
+
     drawCanvas(ctx);
+
+    const doResizeCanvas = () => resizeCanvas(ctx);
+
+    window.addEventListener('resize', doResizeCanvas);
+
+    return () => window.removeEventListener('resize', doResizeCanvas);
   }, []);
 
   return (
