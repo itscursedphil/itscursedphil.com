@@ -1,7 +1,9 @@
+import drawWeaver from './generators/weaver';
+
 export const initialize = (): CanvasRenderingContext2D => {
   const canvas = document.getElementById('background') as HTMLCanvasElement;
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
 
   const ctx = canvas.getContext('2d');
 
@@ -10,26 +12,16 @@ export const initialize = (): CanvasRenderingContext2D => {
   return ctx;
 };
 
-const drawRandomPixel = (ctx: CanvasRenderingContext2D) => {
-  const winWidth = window.innerWidth;
-  const winHeight = window.innerHeight;
-
-  const posX = Math.floor(Math.random() * (winWidth / 6)) * 6;
-  const posY = Math.floor(Math.random() * (winHeight / 6)) * 6;
-
-  const shade = Math.random() > 0.5 ? 255 : 0;
-
-  ctx.fillStyle = `rgb(${shade}, ${shade}, ${shade})`;
-  ctx.fillRect(posX, posY, 6, 6);
+export const resize = (ctx: CanvasRenderingContext2D): void => {
+  const { canvas } = ctx;
+  canvas.width = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
+  ctx.fillStyle = 'rgb(0,0,0)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 };
 
-export const draw = (ctx: CanvasRenderingContext2D) => {
-  const amount = Math.floor(Math.random() * 8) - 2;
-
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < amount; i++) {
-    drawRandomPixel(ctx);
-  }
+export const draw = (ctx: CanvasRenderingContext2D): void => {
+  drawWeaver(ctx);
 
   requestAnimationFrame(() => draw(ctx));
 };
