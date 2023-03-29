@@ -14,6 +14,7 @@ const GlobalStyle = createGlobalStyle`
     font-size: 16px;
     width: 100%;
     ${() => layout({ height: ['auto', '100%'] })}
+    min-height: calc(100% - 2rem);
     margin: 0;
     padding: 0;
     display: flex;
