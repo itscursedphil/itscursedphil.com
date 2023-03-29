@@ -23,7 +23,7 @@ const drawRandomPixel = (ctx: CanvasRenderingContext2D) => {
   ctx.fillRect(posX, posY, 6, 6);
 };
 
-export const draw = (ctx: CanvasRenderingContext2D, init = false) => {
+export const draw = (ctx: CanvasRenderingContext2D) => {
   const amount = Math.floor(Math.random() * 8) - 2;
 
   // eslint-disable-next-line no-plusplus
